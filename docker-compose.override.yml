@@ -1,0 +1,59 @@
+# Dev docker file, don't use in production scenarios or for testing prod scenarios
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - EXPLAIN_TEMPLATE_LOADING=False
+      - FILMZONE_ENV=development
+      - FLASK_ENV=development
+      - FLASK_SECRET_KEY=development-only-secret
+      - ADMIN_USERNAME=cmeeches-admin
+      - ADMIN_PASSWORD=secret123
+      - ADMIN_DISPLAY_NAME=Cassius Meeches
+      - LOG_LEVEL=DEBUG
+      - FLASK_DEBUG=1
+    volumes:
+      - sqlite-data:/app/stats-data
+    develop:
+      watch:
+        - path: .
+          target: /app
+          action: sync
+          ignore:
+            - stats-data/
+            - __pycache__/
+  # Tailwind CSS and JS code needs to be bundled with hot reload
+  bundler:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./static/js:/app/static/js:rw
+      # Sync the host's folder to the app container above
+      # which completes the hot reload for tailwind
+      - ./static/css:/app/static/css:rw
+    develop:
+      # We need to watch the assets and templates folder as it's the input for tailwind config
+      # We mount static as it's the output. Any changes by tailwind in Docker will
+      watch:
+        - path: ./assets/js
+          target: /app/assets/js
+          action: sync
+        - path: ./assets/css
+          target: /app/assets/css
+          action: sync
+        - path: ./templates
+          target: /app/templates
+          action: sync
+    entrypoint: []
+    command: npm run watch-bundler
+    working_dir: /app
+
+volumes:
+  sqlite-data:

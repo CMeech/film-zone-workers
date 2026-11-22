@@ -1,0 +1,99 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/dashboard/dashboard.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div x-data="dashboardData" class="animate-fade-up space-y-6 p-4 sm:p-6 lg:p-8">
+
+        <!-- Header / Description -->
+        <div>
+            <h1 class="text-3xl font-bold mb-2">Welcome to the Dashboard!</h1>
+            <p class="text-base-content/70">
+                Stay connected with your team — check announcements, review game stats and film,
+                view upcoming events, access shared resources, and collaborate with your coaches.
+            </p>
+        </div>
+
+        <!-- Announcements Section -->
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h2 class="card-title text-xl">Latest Announcements</h2>
+                <div class="space-y-2 max-h-64 overflow-y-auto pr-2">
+                    <div
+                        id="announcements-page"
+                        x-init="loadAnnouncements()"
+                    >
+                    </div>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-base-300">
+                    <button
+                            @click="prevPage"
+                            class="btn btn-sm btn-outline"
+                            :disabled="currentPage === 1">
+                        Previous
+                    </button>
+                    <button
+                            @click="nextPage"
+                            class="btn btn-sm btn-outline">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                <a href="/games/list"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Games</h3>
+                        <p class="text-sm text-base-content/70">View game statistics and film</p>
+                    </div>
+                </a>
+                <a href="/announcements/list"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Announcements</h3>
+                        <p class="text-sm text-base-content/70">View messages posted by team coaches</p>
+                    </div>
+                </a>
+                <a href="/events/calendar"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Calendar</h3>
+                        <p class="text-sm text-base-content/70">View team events and schedule</p>
+                    </div>
+                </a>
+                <a href="/resources/list"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Resources</h3>
+                        <p class="text-sm text-base-content/70">View important team documents</p>
+                    </div>
+                </a>
+                <a href="/resources/whiteboard"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition md:col-span-2 lg:col-span-2">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Whiteboard</h3>
+                        <p class="text-sm text-base-content/70">Draw simple court diagrams for analysis</p>
+                    </div>
+                </a>
+                <a href="/set-explorer/"
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition md:col-span-2 lg:col-span-2">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Set Explorer</h3>
+                        <p class="text-sm text-base-content/70">Explore set position, height, and tempo in 3D</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/components/roster/view-roster.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="m-4" x-data="rosterData">
+  <h1 class="text-3xl font-bold mb-4">{{ g.user_profile.active_team_name }} - Team Roster</h1>
+  {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
+  <div class="mb-6">
+    <button
+            class="btn btn-primary"
+            @click="registerPlayer"
+    >
+      Register
+    </button>
+  </div>
+  {% endif %}
+
+  <div class="overflow-x-auto">
+    <table class="table table-zebra bg-base-100 shadow-lg">
+      <thead>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Birth Year</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for player in players %}
+      <tr>
+        <td class="font-medium">{{ player.number }}</td>
+        <td>{{ player.name }}</td>
+        <td>{{ player.position }}</td>
+        <td>{{ player.birth_year }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if not players or players|length == 0 %}
+  <div class="text-center mt-6 text-base-content/60">
+    No players found in the roster
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

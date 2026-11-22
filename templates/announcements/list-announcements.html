@@ -1,0 +1,105 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/announcements/list-announcements.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="md:flex md:items-center md:justify-between mb-6">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-2xl font-bold leading-7 text-base-content sm:text-3xl sm:truncate">
+                        Team Announcements
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Create Announcement Form - Only visible for admin/coach -->
+            {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                <div x-data="createAnnouncement" class="mb-8">
+                    <form @submit.prevent="submitForm" class="card bg-base-100 shadow-md p-6">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">New Announcement</span>
+                            </label>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input
+                                    id="title"
+                                    name="title"
+                                    type="text"
+                                    required
+                                    placeholder="Title"
+                                    @change="handleTitleInput"
+                                    class="input input-bordered w-full"
+                            >
+                            <textarea
+                                    id="message"
+                                    @input="handleMessageInput"
+                                    rows="4"
+                                    placeholder="Message"
+                                    class="textarea textarea-bordered w-full mt-4"
+                                    :placeholder="getPlaceholderText"
+                            ></textarea>
+                        </div>
+                        <div class="form-control mt-6">
+                            <button
+                                    type="submit"
+                                    :disabled="disabled"
+                                    class="btn btn-primary"
+                            >
+                                Post Announcement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- Main content area with pagination controls -->
+            <div x-data="listAnnouncements" @announcement-created.window="loadAnnouncements">
+                <!-- Pagination controls -->
+                <div class="card bg-base-100 shadow-md rounded-b-none">
+                    <div class="card-body p-4">
+                        <!-- Mobile pagination -->
+                        <div class="flex items-center justify-between sm:hidden gap-2">
+                            <button @click="previousPage" class="btn btn-sm btn-outline">
+                                Previous
+                            </button>
+                            <button @click="nextPage" class="btn btn-sm btn-outline">
+                                Next
+                            </button>
+                        </div>
+                        <!-- Desktop pagination -->
+                        <div class="hidden sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-base-content/70">
+                                    Page <span x-text="getCurrentPageText"></span>
+                                </p>
+                            </div>
+                            <div class="join">
+                                <button @click="previousPage" class="join-item btn btn-sm btn-outline">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button @click="nextPage" class="join-item btn btn-sm btn-outline">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements list container, replaced by partial -->
+                <div class="card bg-base-100 shadow-md rounded-t-none">
+                    <div class="card-body" id="announcements-page">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

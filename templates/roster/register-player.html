@@ -1,0 +1,101 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/components/roster/register-player.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold">
+                Register New Player
+            </h2>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="mb-8">
+            <div class="alert alert-info" role="alert">
+                {% for message in messages %}
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div x-data="playerData">
+                    <form id="playerForm" @submit.prevent="submitForm" method="POST" class="space-y-6">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="form-control">
+                            <label for="name" class="label">
+                                <span class="label-text">Player Name</span>
+                            </label>
+                            <input id="name"
+                                   name="name"
+                                   type="text"
+                                   required
+                                   @change="setName"
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label for="number" class="label">
+                                <span class="label-text">Jersey Number</span>
+                            </label>
+                            <input id="number"
+                                   name="number"
+                                   type="number"
+                                   required
+                                   @change="setNumber"
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label for="position" class="label">
+                                <span class="label-text">Position</span>
+                            </label>
+                            <input id="position"
+                                   name="position"
+                                   type="text"
+                                   required
+                                   @change="setPosition"
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label for="year" class="label">
+                                <span class="label-text">Birth Year</span>
+                            </label>
+                            <input id="year"
+                                   name="year"
+                                   type="number"
+                                   required
+                                   @change="setBirthYear"
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control pt-4">
+                            <button type="submit"
+                                    :disabled="disabled"
+                                    class="btn btn-primary w-full">
+                                <span x-text="submitText"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

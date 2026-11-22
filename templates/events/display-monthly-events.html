@@ -1,0 +1,51 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/events/display-monthly-events.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div x-data="calendarData" class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="card bg-base-100 shadow-md">
+                <div class="card-body">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="card-title text-2xl">Team Calendar</h2>
+                        {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
+                        <button @click="createEvent"
+                                class="btn btn-primary">
+                            Add Event
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="eventModal" class="modal modal-bottom sm:modal-middle hidden">
+        <div class="modal-box bg-base-100">
+            <button id="closeModalBtn"
+                    class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+            </button>
+            <div id="eventDetails" class="mt-6"></div>
+            {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
+            <div class="modal-action">
+                <button id="deleteEventBtn"
+                        class="btn btn-error">
+                    Delete Event
+                </button>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </div>
+
+{% endblock %}

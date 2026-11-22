@@ -1,0 +1,40 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/components/team/list-user-teams.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="m-4" x-data="teamsData">
+    <h1 class="text-3xl font-bold mb-4">Teams</h1>
+    <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+        {% for team in teams %}
+        <li class="card bg-base-100 shadow-lg">
+            <figure class="px-10 pt-10">
+                <img src="{{ team.logo_path }}" alt="{{ team.name }} logo" class="h-32 w-32 object-contain">
+            </figure>
+            <div class="card-body items-center text-center">
+                <h3 class="card-title">{{ team.name }}</h3>
+                <div class="text-sm text-base-content/70">
+                    <p>Team ID: {{ team.id }}</p>
+                    <p>Year: {{ team.year }}</p>
+                </div>
+                <div class="card-actions">
+                    <button
+                            class="btn btn-primary btn-sm"
+                            @click="selectTeam({{ team.id }})"
+                    >
+                        Select
+                    </button>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if not teams %}
+    <div class="text-center mt-6 text-base-content/60">
+        No teams found
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

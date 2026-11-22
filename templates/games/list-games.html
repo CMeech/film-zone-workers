@@ -1,0 +1,50 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/games/list-games.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div x-data="gamesApp" x-init="init()" class="p-4">
+        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+        <h1 class="text-3xl font-bold mb-6">Games</h1>
+
+        {% include "games/partials/create-form.html" %}
+
+        <div
+                id="games-list"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+            <template x-for="game in games" :key="game.id">
+                <div
+                        class="card bg-base-100 shadow-lg hover:shadow-xl transition cursor-pointer"
+                        @click="goToGame(game.id)"
+                >
+                    <div class="card-body flex flex-col justify-between">
+                        <div>
+                            <h3 class="card-title" x-text="gameTitle(game)"></h3>
+                            <div class="flex justify-between mt-1">
+                                <p class="text-base-content/70" x-text="game.final_score || ''"></p>
+                                <span class="text-base-content/50 text-sm" x-text="formatDate(game.event_date)"></span>
+                            </div>
+                        </div>
+
+                        {% if g.user_profile.user.role.value in ["coach", "admin"] %}
+                            <button
+                                    type="button"
+                                    class="btn btn-sm btn-error mt-4"
+                                    @click.stop="deleteGame(game.id)"
+                            >
+                                Delete
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div x-show="games.length === 0" class="text-center mt-6 text-base-content/60">
+            No games found
+        </div>
+    </div>
+{% endblock %}

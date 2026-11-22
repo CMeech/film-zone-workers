@@ -1,0 +1,70 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/resources/list-resources.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-6">
+                <h2 class="text-2xl sm:text-3xl font-bold">
+                    Team Resources
+                </h2>
+            </div>
+
+            <!-- Create Resource Form - Only visible for admin/coach -->
+            {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                <div x-data="createResource" class="mb-8">
+                    <form @submit.prevent="submitForm" class="card bg-base-100 shadow-lg">
+                        <div class="card-body space-y-4">
+                            <div class="form-control">
+                                <label for="file" class="label">
+                                    <span class="label-text">Upload New Resource (PDF)</span>
+                                </label>
+                                <div class="flex gap-1">
+                                    <label class="btn btn-primary btn-sm rounded-r-none">
+                                        <span>Choose File</span>
+                                        <input type="file"
+                                               id="file"
+                                               name="file"
+                                               accept=".pdf,.pptx"
+                                               @change="handleFileSelect"
+                                               class="hidden">
+                                    </label>
+                                    <span x-text="fileText"
+                                          class="flex-1 px-3 py-2 text-sm text-base-content/60 input input-bordered input-sm rounded-l-none">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                        class="btn btn-primary btn-sm">
+                                    Upload Resource
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- Resources List -->
+            <div x-data="listResources"
+                 @resource-created.window="loadResources"
+                 @resource-deleted.window="loadResources"
+            >
+                <div id="resources-list" class="card bg-base-100 shadow-lg">
+                    <template x-if="loading">
+                        <div class="card-body">
+                            <div class="loading loading-spinner loading-md"></div>
+                        </div>
+                    </template>
+                    {# Replaced by partial #}
+                    <div id="resources-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

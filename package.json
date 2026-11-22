@@ -1,0 +1,42 @@
+{
+  "name": "film-zone",
+  "version": "1.0.0",
+  "description": "Application code for Volleyball film tracking software",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify",
+    "build-esbuild": "node esbuild.config.js --trace-warnings",
+    "watch-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose",
+    "watch-bundler": "concurrently -k -n ESBUILD,TAILWIND -c green,cyan \"npm run build-esbuild\" \"npm run watch-tailwind\"",
+    "test:browser": "playwright test",
+    "test:browser:update": "playwright test --update-snapshots"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@alpinejs/csp": "^3.15.8",
+    "@imacrayon/alpine-ajax": "^0.12.6",
+    "@playwright/test": "1.62.1",
+    "@tailwindcss/cli": "^4.1.18",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.3",
+    "glob": "^13.0.3",
+    "gsap": "^3.14.2",
+    "rxjs": "^7.8.2",
+    "tailwindcss": "^4.1.18"
+  },
+  "type": "module",
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/list": "^6.1.20",
+    "daisyui": "^5.5.18",
+    "three": "0.185.1"
+  }
+}

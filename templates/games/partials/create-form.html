@@ -1,0 +1,78 @@
+
+{# Show form only for coaches/admins #}
+{% if g.user_profile.user.role.value in ["coach", "admin"] %}
+    <form
+            class="card bg-base-100 shadow-lg mb-6"
+            @submit.prevent="createGame"
+    >
+        <div class="card-body space-y-4">
+            <h2 class="card-title">Create New Game</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-control">
+                    <label for="opponent_name" class="label">
+                        <span class="label-text">Opponent</span>
+                    </label>
+                    <input
+                            type="text"
+                            id="opponent_name"
+                            name="opponent_name"
+                            required
+                            x-model="formOpponentName"
+                            class="input input-bordered"
+                    />
+                </div>
+
+                <div class="form-control">
+                    <label for="final_score" class="label">
+                        <span class="label-text">Final Score</span>
+                    </label>
+                    <input
+                            type="text"
+                            id="final_score"
+                            name="final_score"
+                            x-model="formFinalScore"
+                            class="input input-bordered"
+                    />
+                </div>
+
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">Home Game</span>
+                        <input
+                                type="checkbox"
+                                id="is_home"
+                                name="is_home"
+                                x-model="formIsHome"
+                                class="checkbox"
+                        />
+                    </label>
+                </div>
+
+                <div class="form-control">
+                    <label for="event_id" class="label">
+                        <span class="label-text">Event</span>
+                    </label>
+                    <select
+                            id="event_id"
+                            name="event_id"
+                            x-model="formEventId"
+                            class="select select-bordered"
+                    >
+                        <option value="">-- Select an Event --</option>
+                        <template x-for="event in events" :key="event.id">
+                            <option :value="event.id" x-text="getEventTitle(event)"></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+
+            <button
+                    type="submit"
+                    :disabled="disabled"
+                    class="btn btn-primary"
+            >
+                <span x-text="submitText"></span>
+            </button>
+        </div>
+    </form>
+{% endif %}

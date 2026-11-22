@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FilmZone</title>
+    <link
+        nonce="{{ g.csp_nonce }}"
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/tailwind.css') }}"
+    >
+    <script
+        nonce="{{ g.csp_nonce }}"
+        src="{{ url_for('static', filename='js/gsap/gsap.js') }}"
+    ></script>
+    <script
+        nonce="{{ g.csp_nonce }}"
+        defer
+        src="{{ url_for('static', filename='js/alpine/alpine.js') }}"
+    ></script>
+    {% block styles %}{% endblock %}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+    <div
+        x-data="appData"
+        class="flex flex-col bg-base-200 min-h-screen"
+    >
+        <!-- Navbar -->
+        <nav class="navbar bg-base-100 shadow-md sticky top-0 z-50">
+            <div class="flex-1">
+                <div class="flex items-center gap-3">
+                    {% if g.user_profile.active_team_logo %}
+                    <div class="w-10 h-10">
+                        <img src="{{ g.user_profile.active_team_logo }}" alt="{{ g.user_profile.active_team_name }} logo" class="h-10 w-10 object-contain">
+                    </div>
+                    {% endif %}
+                    <div class="text-xl font-bold">FilmZone</div>
+                </div>
+            </div>
+            <div class="flex-none gap-2">
+                <!-- Mobile menu button -->
+                <button
+                    @click="toggleSidebar"
+                    class="btn btn-ghost md:hidden"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Sidebar and Main Content -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Side Panel -->
+            <aside
+                :class="sideBarClass"
+                class="fixed md:static inset-y-0 left-0 w-64 bg-base-100 shadow-md transition-transform transform md:translate-x-0 z-40 overflow-y-auto"
+            >
+                <nav class="menu p-4 space-y-1">
+                    <a href="/dashboard" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Dashboard</a>
+                    <a href="/announcements/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Announcements</a>
+                    <a href="/games/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Games</a>
+                    <a href="/events/calendar" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Team Calendar</a>
+                    <a href="/resources/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Resources</a>
+                    <a href="/resources/whiteboard" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Whiteboard</a>
+                    <a href="/set-explorer/" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Set Explorer</a>
+                    <a href="/roster/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Roster</a>
+                    <a href="/team/list/user" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Teams</a>
+                    {% if g.user_profile.user.role.value == 'admin' %}
+                    <a href="/user/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Users</a>
+                    {% endif %}
+                    {% if g.user_profile.user.role.value == 'admin' %}
+                    <a href="/user/register/player" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Player access</a>
+                    {% endif %}
+                    {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                    <a href="/user/resetPassword" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Reset password</a>
+                    {% endif %}
+                    {% if g.user_profile.user.role.value == 'admin' %}
+                    <a href="/team/list" class="menu-item text-base-content hover:bg-base-200 p-3 rounded transition-colors">Teams admin</a>
+                    {% endif %}
+                    <div class="divider my-2"></div>
+                    <a href="/auth/logout" class="menu-item text-base-content hover:bg-error/10 hover:text-error p-3 rounded transition-colors">Logout</a>
+                </nav>
+            </aside>
+
+            <!-- Main content -->
+            <main class="flex-1 overflow-y-auto">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!--    Scripts must be in body to ensure Alpine has been loaded correctly-->
+    <script
+        nonce="{{ g.csp_nonce }}"
+        src="{{ url_for('static', filename='js/components/base-nav/base-nav.js') }}"
+    ></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

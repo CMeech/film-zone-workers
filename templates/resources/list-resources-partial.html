@@ -1,0 +1,29 @@
+{# Don't forget partial must include the target ID for Alpine AJAX #}
+<div id="resources-content" class="divider">
+    {% for resource in resources %}
+        <div class="p-4 flex items-center justify-between border-b border-base-300">
+            <span class="text-base-content">{{ resource.filename }}</span>
+            <div class="flex gap-2">
+                <button
+                        data-action="view"
+                        data-resource-id="{{ resource.id }}"
+                        class="btn btn-primary btn-sm">
+                    View PDF
+                </button>
+                {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                    <button
+                            data-action="delete"
+                            data-resource-id="{{ resource.id }}"
+                            class="btn btn-error btn-sm">
+                        Delete
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    {% if not resources %}
+        <div class="p-4 text-base-content/60">
+            No resources available.
+        </div>
+    {% endif %}
+</div>
